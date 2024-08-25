@@ -1,0 +1,688 @@
+﻿<Page x:Class="GameMasterHelper.Pages.Creatures.CreaturesPageEdit"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:GameMasterHelper.Pages.Creatures"
+      xmlns:user="clr-namespace:GameMasterHelper.View.UserControls"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      Title="CreaturesPageEdit">
+    <Page.Resources>
+        <Style x:Key="Default">
+            <Setter Property="Control.Margin" Value="10 5 10 5" />
+        </Style>
+        <Style x:Key="AttrLabel">
+            <Setter Property="ColumnDefinition.Width" Value="60" />
+        </Style>
+        <Style x:Key="DefaultText" BasedOn="{StaticResource Default}">
+            <Setter Property="TextElement.FontSize" Value="15"/>
+        </Style>
+        <Style x:Key="BorderParagraph">
+            <Setter Property="ItemsControl.BorderThickness" Value="0 1 0 0"/>
+            <Setter Property="ItemsControl.BorderBrush" Value="#FFD2D2D2"/>
+            <Setter Property="ItemsControl.Margin" Value="2"/>
+        </Style>
+    </Page.Resources>
+    <Grid>
+
+        <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Visible" 
+                      HorizontalScrollBarVisibility="Disabled">
+            <Grid x:Name="MainGrid">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <StackPanel Grid.Row="0" Orientation="Horizontal">
+                    <Button x:Name="bnSave" Content="Сохранить изменения"
+                        Style="{StaticResource DefaultText}" Padding="3" Click="bnSave_Click"/>
+                    <Button x:Name="bnDefault" Content="Вернуть значения по умолчанию"
+                        Style="{StaticResource DefaultText}" Padding="3" Click="bnDefault_Click"/>
+                </StackPanel>
+                <Grid Grid.Row="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="45"/>
+                        <ColumnDefinition Width="100"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" Text="Имя/Название:" Style="{StaticResource DefaultText}"/>
+                    <user:TextBoxWithPlaceholder x:Name="tbpName" Grid.Column="1" Placeholder="Например: Разбойник..."
+                                     Style="{StaticResource DefaultText}"/>
+                    <TextBlock Grid.Column="2" Text="Ур." Style="{StaticResource DefaultText}"/>
+                    <ComboBox x:Name="cbLvl" Grid.Column="3" Style="{StaticResource Default}"/>
+                </Grid>
+                <Grid Grid.Row="2">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0" Text="Описание:" Style="{StaticResource DefaultText}"/>
+                    <user:RichTextBoxClr x:Name="rtbDescr" Grid.Row="1" Placeholder="Например: Живет в лесу, не кусается..."
+                             Style="{StaticResource DefaultText}"/>
+                </Grid>
+                <Grid Grid.Row="3">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Grid Grid.Column="0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="Размер" 
+                                   Style="{StaticResource DefaultText}"/>
+                        <ComboBox Grid.Column="1" x:Name="cbSizes"
+                                  Style="{StaticResource Default}"/>
+                    </Grid>
+                    <Grid Grid.Column="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="Тип"
+                                   Style="{StaticResource DefaultText}"/>
+                        <ComboBox Grid.Column="1" x:Name="cbTypes"
+                                  Style="{StaticResource Default}"/>
+                    </Grid>
+                    <Grid Grid.Column="2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="Мировозрение"
+               Style="{StaticResource DefaultText}"/>
+                        <ComboBox Grid.Column="1" x:Name="cbAligment"
+              Style="{StaticResource Default}"/>
+                    </Grid>
+                </Grid>
+                <StackPanel Grid.Row="5">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Style="{StaticResource AttrLabel}" />
+                            <ColumnDefinition Width="17*"/>
+                            <ColumnDefinition Width="4*"/>
+                            <ColumnDefinition Width="160"/>
+                            <ColumnDefinition Width="6*"/>
+                        </Grid.ColumnDefinitions>
+                        <Border Style="{StaticResource BorderParagraph}" Grid.ColumnSpan="5" Grid.RowSpan="1"/>
+                        <ComboBox Grid.Column="4" x:Name="cbStrSkill0"
+Style="{StaticResource DefaultText}" VerticalAlignment="Top"/>
+                        <TextBlock Style="{StaticResource DefaultText}" x:Name="tbStrSkill0"
+                                   Grid.Column="3" VerticalAlignment="Center" 
+                                   HorizontalAlignment="Left"/>
+                        <TextBlock Style="{StaticResource DefaultText}" Text="СИЛ" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                        <user:DataCheckTextBox NotifyText="Значение характеристики должно находится в промежутке [0; 30]" x:Name="dctbStr" Style="{StaticResource Default}" Grid.Column="1"
+                    Placeholder="Например: 1, 2, 10, 30" DataCheckEvent="dctbStr_DataCheckEvent"/>
+                        <ComboBox Grid.Column="2" x:Name="cbSaveThrowStr"
+Style="{StaticResource DefaultText}" VerticalAlignment="Top"/>
+                    </Grid>
+                    <Grid>
+                        
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Style="{StaticResource AttrLabel}" />
+                            <ColumnDefinition Width="17*"/>
+                            <ColumnDefinition Width="4*"/>
+                            <ColumnDefinition Width="160"/>
+                            <ColumnDefinition Width="6*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+                        <Border Style="{StaticResource BorderParagraph}" Grid.ColumnSpan="5" Grid.RowSpan="3"/>
+                        <ComboBox Grid.Column="4" x:Name="cbDexSkill0"
+Style="{StaticResource DefaultText}" VerticalAlignment="Top"/>
+                        <TextBlock Style="{StaticResource DefaultText}" x:Name="tbDexSkill0"
+                                   Grid.Column="3" VerticalAlignment="Center" 
+                                   HorizontalAlignment="Left"/>
+                        <ComboBox Grid.Column="4" Grid.Row="1" x:Name="cbDexSkill1"
+Style="{StaticResource DefaultText}" VerticalAlignment="Top"/>
+                        <TextBlock  Grid.Row="1" Style="{StaticResource DefaultText}" x:Name="tbDexSkill1"
+                                   Grid.Column="3" VerticalAlignment="Center" 
+                                   HorizontalAlignment="Left"/>
+                        <ComboBox Grid.Column="4" Grid.Row="2" x:Name="cbDexSkill2"
+Style="{StaticResource DefaultText}" VerticalAlignment="Top"/>
+                        <TextBlock  Grid.Row="2" Style="{StaticResource DefaultText}" x:Name="tbDexSkill2"
+                                   Grid.Column="3" VerticalAlignment="Center" 
+                                   HorizontalAlignment="Left"/>
+
+                        <ComboBox Grid.Column="2" x:Name="cbSaveThrowDex"
+Style="{StaticResource DefaultText}" VerticalAlignment="Top"/>
+                        <TextBlock Style="{StaticResource DefaultText}" Text="ЛОВ" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                        <user:DataCheckTextBox NotifyText="Значение характеристики должно находится в промежутке [0; 30]" x:Name="dctbDex" Style="{StaticResource Default}" Grid.Column="1"
+                      Placeholder="Например: 1, 2, 10, 30" DataCheckEvent="dctbDex_DataCheckEvent"/>
+                    </Grid>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Style="{StaticResource AttrLabel}" />
+                            <ColumnDefinition Width="17*"/>
+                            <ColumnDefinition Width="4*"/>
+                            <ColumnDefinition Width="160"/>
+                            <ColumnDefinition Width="6*"/>
+                        </Grid.ColumnDefinitions>
+                        <Border Style="{StaticResource BorderParagraph}" Grid.ColumnSpan="5" Grid.RowSpan="1"/>
+                        <ComboBox Grid.Column="4" x:Name="cbSaveThrowCon"
+Style="{StaticResource DefaultText}" VerticalAlignment="Top"/>
+                        <TextBlock Style="{StaticResource DefaultText}" Text="ТЕЛ" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                        <user:DataCheckTextBox NotifyText="Значение характеристики должно находится в промежутке [0; 30]" x:Name="dctbCon" Style="{StaticResource Default}" Grid.Column="1"
+                     Placeholder="Например: 1, 2, 10, 30" DataCheckEvent="dctbStr_DataCheckEvent"/>
+                    </Grid>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Style="{StaticResource AttrLabel}" />
+                            <ColumnDefinition Width="17*"/>
+                            <ColumnDefinition Width="4*"/>
+                            <ColumnDefinition Width="160"/>
+                            <ColumnDefinition Width="6*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+                        <Border Style="{StaticResource BorderParagraph}" Grid.ColumnSpan="5" Grid.RowSpan="5"/>
+                        <ComboBox Grid.Column="4" Grid.Row="0" x:Name="cbIntSkill0"
+Style="{StaticResource DefaultText}" VerticalAlignment="Top"/>
+                        <TextBlock  Grid.Row="0" Style="{StaticResource DefaultText}" x:Name="tbIntSkill0"
+                                   Grid.Column="3" VerticalAlignment="Center" 
+                                   HorizontalAlignment="Left"/>
+                        <ComboBox Grid.Column="4" Grid.Row="1" x:Name="cbIntSkill1"
+Style="{StaticResource DefaultText}" VerticalAlignment="Top"/>
+                        <TextBlock  Grid.Row="1" Style="{StaticResource DefaultText}" x:Name="tbIntSkill1"
+                                   Grid.Column="3" VerticalAlignment="Center" 
+                                   HorizontalAlignment="Left"/>
+                        <ComboBox Grid.Column="4" Grid.Row="2" x:Name="cbIntSkill2"
+Style="{StaticResource DefaultText}" VerticalAlignment="Top"/>
+                        <TextBlock  Grid.Row="2" Style="{StaticResource DefaultText}" x:Name="tbIntSkill2"
+                                   Grid.Column="3" VerticalAlignment="Center" 
+                                   HorizontalAlignment="Left"/>
+                        <ComboBox Grid.Column="4" Grid.Row="3" x:Name="cbIntSkill3"
+Style="{StaticResource DefaultText}" VerticalAlignment="Top"/>
+                        <TextBlock  Grid.Row="3" Style="{StaticResource DefaultText}" x:Name="tbIntSkill3"
+                                   Grid.Column="3" VerticalAlignment="Center" 
+                                   HorizontalAlignment="Left"/>
+                        <ComboBox Grid.Column="4" Grid.Row="4" x:Name="cbIntSkill4"
+Style="{StaticResource DefaultText}" VerticalAlignment="Top"/>
+                        <TextBlock  Grid.Row="4" Style="{StaticResource DefaultText}" x:Name="tbIntSkill4"
+                                   Grid.Column="3" VerticalAlignment="Center" 
+                                   HorizontalAlignment="Left"/>
+                        <!---->
+                        <ComboBox Grid.Column="2" x:Name="cbSaveThrowInt"
+Style="{StaticResource DefaultText}" VerticalAlignment="Top"/>
+                        <TextBlock Style="{StaticResource DefaultText}" Text="ИНТ" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                        <user:DataCheckTextBox NotifyText="Значение характеристики должно находится в промежутке [0; 30]" x:Name="dctbInt" Style="{StaticResource Default}" Grid.Column="1"
+Placeholder="Например: 1, 2, 10, 30" DataCheckEvent="dctbStr_DataCheckEvent"/>
+                    </Grid>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Style="{StaticResource AttrLabel}" />
+                            <ColumnDefinition Width="17*"/>
+                            <ColumnDefinition Width="4*"/>
+                            <ColumnDefinition Width="160"/>
+                            <ColumnDefinition Width="6*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+                        <Border Style="{StaticResource BorderParagraph}" Grid.ColumnSpan="5" Grid.RowSpan="5"/>
+                        <ComboBox Grid.Column="4" Grid.Row="0" x:Name="cbWisSkill0"
+Style="{StaticResource DefaultText}" VerticalAlignment="Top"/>
+                        <TextBlock  Grid.Row="0" Style="{StaticResource DefaultText}" x:Name="tbWisSkill0"
+                                   Grid.Column="3" VerticalAlignment="Center" 
+                                   HorizontalAlignment="Left"/>
+                        <ComboBox Grid.Column="4" Grid.Row="1" x:Name="cbWisSkill1"
+Style="{StaticResource DefaultText}" VerticalAlignment="Top"/>
+                        <TextBlock  Grid.Row="1" Style="{StaticResource DefaultText}" x:Name="tbWisSkill1"
+                                   Grid.Column="3" VerticalAlignment="Center" 
+                                   HorizontalAlignment="Left"/>
+                        <ComboBox Grid.Column="4" Grid.Row="2" x:Name="cbWisSkill2"
+Style="{StaticResource DefaultText}" VerticalAlignment="Top"/>
+                        <TextBlock  Grid.Row="2" Style="{StaticResource DefaultText}" x:Name="tbWisSkill2"
+                                   Grid.Column="3" VerticalAlignment="Center" 
+                                   HorizontalAlignment="Left"/>
+                        <ComboBox Grid.Column="4" Grid.Row="3" x:Name="cbWisSkill3"
+Style="{StaticResource DefaultText}" VerticalAlignment="Top"/>
+                        <TextBlock  Grid.Row="3" Style="{StaticResource DefaultText}" x:Name="tbWisSkill3"
+                                   Grid.Column="3" VerticalAlignment="Center" 
+                                   HorizontalAlignment="Left"/>
+                        <ComboBox Grid.Column="4" Grid.Row="4" x:Name="cbWisSkill4"
+Style="{StaticResource DefaultText}" VerticalAlignment="Top"/>
+                        <TextBlock  Grid.Row="4" Style="{StaticResource DefaultText}" x:Name="tbWisSkill4"
+                                   Grid.Column="3" VerticalAlignment="Center" 
+                                   HorizontalAlignment="Left"/>
+                        <!---->
+                        <ComboBox Grid.Column="2" x:Name="cbSaveThrowWis"
+Style="{StaticResource DefaultText}" VerticalAlignment="Top"/>
+                        <TextBlock Style="{StaticResource DefaultText}" Text="МУД" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                        <user:DataCheckTextBox NotifyText="Значение характеристики должно находится в промежутке [0; 30]" x:Name="dctbWis" Style="{StaticResource Default}" Grid.Column="1"
+  Placeholder="Например: 1, 2, 10, 30" DataCheckEvent="dctbStr_DataCheckEvent"/>
+                    </Grid>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Style="{StaticResource AttrLabel}" />
+                            <ColumnDefinition Width="17*"/>
+                            <ColumnDefinition Width="4*"/>
+                            <ColumnDefinition Width="160"/>
+                            <ColumnDefinition Width="6*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+                        <Border Style="{StaticResource BorderParagraph}" Grid.ColumnSpan="5" Grid.RowSpan="4"
+                                BorderThickness="0 1 0 1"/>
+                        <ComboBox Grid.Column="4" Grid.Row="0" x:Name="cbChaSkill0"
+Style="{StaticResource DefaultText}" VerticalAlignment="Top"/>
+                        <TextBlock  Grid.Row="0" Style="{StaticResource DefaultText}" x:Name="tbChaSkill0"
+                                   Grid.Column="3" VerticalAlignment="Center" 
+                                   HorizontalAlignment="Left"/>
+                        <ComboBox Grid.Column="4" Grid.Row="1" x:Name="cbChaSkill1"
+Style="{StaticResource DefaultText}" VerticalAlignment="Top"/>
+                        <TextBlock  Grid.Row="1" Style="{StaticResource DefaultText}" x:Name="tbChaSkill1"
+                                   Grid.Column="3" VerticalAlignment="Center" 
+                                   HorizontalAlignment="Left"/>
+                        <ComboBox Grid.Column="4" Grid.Row="2" x:Name="cbChaSkill2"
+Style="{StaticResource DefaultText}" VerticalAlignment="Top"/>
+                        <TextBlock  Grid.Row="2" Style="{StaticResource DefaultText}" x:Name="tbChaSkill2"
+                                   Grid.Column="3" VerticalAlignment="Center" 
+                                   HorizontalAlignment="Left"/>
+                        <ComboBox Grid.Column="4" Grid.Row="3" x:Name="cbChaSkill3"
+Style="{StaticResource DefaultText}" VerticalAlignment="Top"/>
+                        <TextBlock  Grid.Row="3" Style="{StaticResource DefaultText}" x:Name="tbChaSkill3"
+                                   Grid.Column="3" VerticalAlignment="Center" 
+                                   HorizontalAlignment="Left"/>
+                        <!---->
+                        <ComboBox Grid.Column="2" x:Name="cbSaveThrowCha"
+Style="{StaticResource DefaultText}" VerticalAlignment="Top"/>
+                        <TextBlock Style="{StaticResource DefaultText}" Text="ХАР" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                        <user:DataCheckTextBox NotifyText="Значение характеристики должно находится в промежутке [0; 30]" x:Name="dctbCha" Style="{StaticResource Default}" Grid.Column="1"
+                     Placeholder="Например: 1, 2, 10, 30" DataCheckEvent="dctbStr_DataCheckEvent"/>
+                    </Grid>
+                </StackPanel>
+                <Grid Grid.Row="6">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="3*"/>
+                        <ColumnDefinition Width="15*"/>
+                        <ColumnDefinition Width="5*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Column="0" Text="Хиты" Style="{StaticResource DefaultText}"/>
+                    <user:DataCheckTextBox Grid.Column="1" x:Name="dctbHitDice"
+                                           Placeholder="Например: 1к6, к20, 2к12+1" DataCheckEvent="dctbHitDice_DataCheckEvent"
+                                           NotifyText="Выражение должно соответствовать: 1к6, к20, 2к12+1"
+                                           Style="{StaticResource Default}"/>
+                    <Button Grid.Column="2" x:Name="btnDefaultHp" Click="btnDefaultHp_Click"
+                            Style="{StaticResource DefaultText}" Content="Сгенерировать" Padding="3" VerticalAlignment="Top"/>
+
+                    <TextBlock Grid.Column="0" Grid.Row="1" Text="КД" Style="{StaticResource DefaultText}"/>
+                    <user:DataCheckTextBox Grid.Column="1" Grid.Row="1" x:Name="dctbArmorClass"
+                                           Style="{StaticResource Default}"
+                       Placeholder="КД существа не может превышать 30!"
+                       NotifyText="Итоговый класс брони не должен превышать 30" DataCheckEvent="dctbArmorClass_DataCheckEvent"/>
+                    <ComboBox Grid.Column="2" Grid.Row="1" x:Name="cbArmorType"
+        Style="{StaticResource DefaultText}" VerticalAlignment="Top"/>
+
+                    <TextBlock Grid.Column="0" Grid.Row="2" Text="Базовая скорость(ф)" Style="{StaticResource DefaultText}"/>
+                    <user:DataCheckTextBox Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="2" x:Name="dctbBaseSpeed"
+                       Style="{StaticResource Default}"
+   Placeholder="30, 60"
+   NotifyText="Значение скорости должно быть положительным числом"
+                                           DataCheckEvent="dctbBaseSpeed_DataCheckEvent"/>
+                    <!--Копание-->
+                    <TextBlock Grid.Column="0" Grid.Row="3" Text="Скорость копания(ф)" Style="{StaticResource DefaultText}"/>
+                    <user:DataCheckTextBox Grid.Column="1" Grid.Row="3" x:Name="dctbBurrowSpeed"
+                    Style="{StaticResource Default}"
+Placeholder="30, 60"
+NotifyText="Значение скорости должно быть положительным числом"
+                                        DataCheckEvent="dctbBaseSpeed_DataCheckEvent"/>
+                    <CheckBox x:Name="chkbHaveBurrow" Grid.Column="2" Grid.Row="3" HorizontalAlignment="Left"
+                              VerticalAlignment="Center" Content="Have?" Checked="chkbHaveBurrow_Checked" Unchecked="chkbHaveBurrow_Unchecked" />
+                    
+                    <!--Плавание-->
+                    <TextBlock Grid.Column="0" Grid.Row="4" Text="Скорость плавания(ф)" Style="{StaticResource DefaultText}"/>
+                    <user:DataCheckTextBox Grid.Column="1" Grid.Row="4" x:Name="dctbSwimSpeed"
+                    Style="{StaticResource Default}"
+Placeholder="30, 60"
+NotifyText="Значение скорости должно быть положительным числом"
+                                        DataCheckEvent="dctbBaseSpeed_DataCheckEvent"/>
+                    <CheckBox x:Name="chkbHaveSwim" Grid.Column="2" Grid.Row="4" HorizontalAlignment="Left"
+                              VerticalAlignment="Center" Content="Have?" Checked="chkbHaveSwim_Checked" Unchecked="chkbHaveSwim_Unchecked" />
+                    <!--Лазание-->
+                    <TextBlock Grid.Column="0" Grid.Row="5" Text="Скорость лазания(ф)" Style="{StaticResource DefaultText}"/>
+                    <user:DataCheckTextBox Grid.Column="1" Grid.Row="5" x:Name="dctbClimbSpeed"
+                    Style="{StaticResource Default}"
+Placeholder="30, 60"
+NotifyText="Значение скорости должно быть положительным числом"
+                                        DataCheckEvent="dctbBaseSpeed_DataCheckEvent"/>
+                    <CheckBox x:Name="chkbHaveClimb" Grid.Column="2" Grid.Row="5" HorizontalAlignment="Left"
+                              VerticalAlignment="Center" Content="Have?" Checked="chkbClimbSwim_Checked" Unchecked="chkbClimbSwim_Unchecked" />
+                    <!--Полет-->
+                    <TextBlock Grid.Column="0" Grid.Row="6" Text="Скорость полета(ф)" Style="{StaticResource DefaultText}"/>
+                    <user:DataCheckTextBox Grid.Column="1" Grid.Row="6" x:Name="dctbFlySpeed"
+                    Style="{StaticResource Default}"
+Placeholder="30, 60"
+NotifyText="Значение скорости должно быть положительным числом"
+                                        DataCheckEvent="dctbBaseSpeed_DataCheckEvent"/>
+                    <CheckBox x:Name="chkbHaveFly" Grid.Column="2" Grid.Row="6" HorizontalAlignment="Left"
+                              VerticalAlignment="Center" Content="Have?" Checked="chkbFlySwim_Checked" Unchecked="chkbFlySwim_Unchecked" />
+                </Grid>
+                <Grid Grid.Row="7" x:Name="ResistGrid">
+                    
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="1*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid Grid.Column="0" Grid.Row="0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*"/>
+                            <ColumnDefinition Width="1*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Style="{StaticResource DefaultText}" x:Name="tbAcidRes"/>
+                        <ComboBox Grid.Column="1" Style="{StaticResource DefaultText}" x:Name="cbAcidRes"/>
+                    </Grid>
+                    <Grid Grid.Column="0" Grid.Row="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*"/>
+                            <ColumnDefinition Width="1*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Style="{StaticResource DefaultText}" x:Name="tbBludgeoningRes"/>
+                        <ComboBox Grid.Column="1" Style="{StaticResource DefaultText}" x:Name="cbBludgeoningRes"/>
+                    </Grid>
+                    <Grid Grid.Column="0" Grid.Row="2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*"/>
+                            <ColumnDefinition Width="1*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Style="{StaticResource DefaultText}" x:Name="tbColdRes"/>
+                        <ComboBox Grid.Column="1" Style="{StaticResource DefaultText}" x:Name="cbColdRes"/>
+                    </Grid>
+                    <Grid Grid.Column="0" Grid.Row="3">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*"/>
+                            <ColumnDefinition Width="1*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Style="{StaticResource DefaultText}" x:Name="tbFireRes"/>
+                        <ComboBox Grid.Column="1" Style="{StaticResource DefaultText}" x:Name="cbFireRes"/>
+                    </Grid>
+                    <Grid Grid.Column="0" Grid.Row="4">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*"/>
+                            <ColumnDefinition Width="1*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Style="{StaticResource DefaultText}" x:Name="tbForceRes"/>
+                        <ComboBox Grid.Column="1" Style="{StaticResource DefaultText}" x:Name="cbForceRes"/>
+                    </Grid>
+                    <Grid Grid.Column="0" Grid.Row="5">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*"/>
+                            <ColumnDefinition Width="1*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Style="{StaticResource DefaultText}" x:Name="tbLightningRes"/>
+                        <ComboBox Grid.Column="1" Style="{StaticResource DefaultText}" x:Name="cbLightningRes"/>
+                    </Grid>
+                    <Grid Grid.Column="0" Grid.Row="6">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*"/>
+                            <ColumnDefinition Width="1*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Style="{StaticResource DefaultText}" x:Name="tbNecroticRes"/>
+                        <ComboBox Grid.Column="1" Style="{StaticResource DefaultText}" x:Name="cbNecroticRes"/>
+                    </Grid>
+
+                    <Grid Grid.Column="1" Grid.Row="0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*"/>
+                            <ColumnDefinition Width="1*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Style="{StaticResource DefaultText}" x:Name="tbPiercingRes"/>
+                        <ComboBox Grid.Column="1" Style="{StaticResource DefaultText}" x:Name="cbPiercingRes"/>
+                    </Grid>
+                    <Grid Grid.Column="1" Grid.Row="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*"/>
+                            <ColumnDefinition Width="1*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Style="{StaticResource DefaultText}" x:Name="tbPoisonRes"/>
+                        <ComboBox Grid.Column="1" Style="{StaticResource DefaultText}" x:Name="cbPoisonRes"/>
+                    </Grid>
+                    <Grid Grid.Column="1" Grid.Row="2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*"/>
+                            <ColumnDefinition Width="1*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Style="{StaticResource DefaultText}" x:Name="tbPsychicRes"/>
+                        <ComboBox Grid.Column="1" Style="{StaticResource DefaultText}" x:Name="cbPsychicRes"/>
+                    </Grid>
+                    <Grid Grid.Column="1" Grid.Row="3">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*"/>
+                            <ColumnDefinition Width="1*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Style="{StaticResource DefaultText}" x:Name="tbRadiantRes"/>
+                        <ComboBox Grid.Column="1" Style="{StaticResource DefaultText}" x:Name="cbRadiantRes"/>
+                    </Grid>
+                    <Grid Grid.Column="1" Grid.Row="4">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*"/>
+                            <ColumnDefinition Width="1*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Style="{StaticResource DefaultText}" x:Name="tbSlashingRes"/>
+                        <ComboBox Grid.Column="1" Style="{StaticResource DefaultText}" x:Name="cbSlashingRes"/>
+                    </Grid>
+                    <Grid Grid.Column="1" Grid.Row="5">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*"/>
+                            <ColumnDefinition Width="1*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Style="{StaticResource DefaultText}" x:Name="tbThunderRes"/>
+                        <ComboBox Grid.Column="1" Style="{StaticResource DefaultText}" x:Name="cbThunderRes"/>
+                    </Grid>
+                </Grid>
+                <StackPanel Grid.Row="9">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="2*"/>
+                            <ColumnDefinition Width="10*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="Чувства:" Style="{StaticResource DefaultText}"/>
+                        <user:TextBoxWithPlaceholder
+                            x:Name="tbpSenses" Grid.Column="1" 
+                        Placeholder="Слепое зрение 120 фт, Истинное зрение 2 фт, Слух 50 фт"/>
+                    </Grid>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="2*"/>
+                            <ColumnDefinition Width="10*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="Языки:" Style="{StaticResource DefaultText}"/>
+                        <user:TextBoxWithPlaceholder x:Name="tbpLanguages" Grid.Column="1" 
+    Placeholder="Драконий, Общий"/>
+                    </Grid>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="2*"/>
+                            <ColumnDefinition Width="10*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="Владение оружием:" Style="{StaticResource DefaultText}"/>
+                        <user:TextBoxWithPlaceholder x:Name="tbpWeapons" Grid.Column="1" 
+    Placeholder="Боевое оружие, Секиры"/>
+                    </Grid>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="2*"/>
+                            <ColumnDefinition Width="10*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="Владение броней:" Style="{StaticResource DefaultText}"/>
+                        <user:TextBoxWithPlaceholder x:Name="tbpArmors" Grid.Column="1" 
+    Placeholder="Легкая броня, Средняя броня"/>
+                    </Grid>
+                </StackPanel>
+                <Grid Grid.Row="10" >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="10*"/>
+                        <ColumnDefinition Width="1*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <Border Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2"
+                            Style="{StaticResource BorderParagraph}"/>
+                    <TextBlock Grid.Column="0" Grid.Row="0" Text="Действия:"
+                               Style="{StaticResource DefaultText}"/>
+                    <CheckBox x:Name="chkbActions" Grid.Column="1" Grid.Row="0"  Content="Have?"
+                              Style="{StaticResource Default}" Checked="chkbActions_Checked" Unchecked="chkbActions_Unchecked"/>
+                    <user:RichTextBoxClr x:Name="rtbActions"
+                                         Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2"
+                                         Style="{StaticResource Default}"/>
+                </Grid>
+                <Grid Grid.Row="11" >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="10*"/>
+                        <ColumnDefinition Width="1*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <Border Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2"
+            Style="{StaticResource BorderParagraph}"/>
+                    <TextBlock Grid.Column="0" Grid.Row="0" Text="Реакции:"
+               Style="{StaticResource DefaultText}"/>
+                    <CheckBox x:Name="chkbReactions" Grid.Column="1" Grid.Row="0"  Content="Have?"
+              Style="{StaticResource Default}" Unchecked="chkbReactions_Unchecked" Checked="chkbReactions_Checked"/>
+                    <user:RichTextBoxClr x:Name="rtbReactions"
+                         Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2"
+                         Style="{StaticResource Default}"/>
+                </Grid>
+                <Grid Grid.Row="12" >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="10*"/>
+                        <ColumnDefinition Width="1*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <Border Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2"
+                Style="{StaticResource BorderParagraph}"/>
+                    <TextBlock Grid.Column="0" Grid.Row="0" Text="Особенности:"
+                   Style="{StaticResource DefaultText}"/>
+                    <CheckBox x:Name="chkbFeatures" Grid.Column="1" Grid.Row="0"  Content="Have?"
+                  Style="{StaticResource Default}" Checked="chkbFeatures_Checked" Unchecked="chkbFeatures_Unchecked"/>
+                    <user:RichTextBoxClr x:Name="rtbFeatures"
+                             Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2"
+                             Style="{StaticResource Default}"/>
+                </Grid>
+                <Grid Grid.Row="13" >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="10*"/>
+                        <ColumnDefinition Width="1*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <Border Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2"
+Style="{StaticResource BorderParagraph}"/>
+                    <TextBlock Grid.Column="0" Grid.Row="0" Text="Легендарные действия:"
+   Style="{StaticResource DefaultText}"/>
+                    <CheckBox x:Name="chkbLegActions" Grid.Column="1" Grid.Row="0"  Content="Have?"
+  Style="{StaticResource Default}" Checked="chkbLegActions_Checked" Unchecked="chkbLegActions_Unchecked"/>
+                    <user:RichTextBoxClr x:Name="rtbLegActions"
+             Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2"
+             Style="{StaticResource Default}"/>
+                </Grid>
+                <Grid Grid.Row="14" >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="10*"/>
+                        <ColumnDefinition Width="1*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <Border Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2"
+                Style="{StaticResource BorderParagraph}"/>
+                    <TextBlock Grid.Column="0" Grid.Row="0" Text="Действия логова:"
+                   Style="{StaticResource DefaultText}"/>
+                    <CheckBox x:Name="chkbLairActions" Grid.Column="1" Grid.Row="0"  Content="Have?"
+                  Style="{StaticResource Default}" Checked="chkbLairActions_Checked" Unchecked="chkbLairActions_Unchecked"/>
+                    <user:RichTextBoxClr x:Name="rtbLairActions"
+                             Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2"
+                             Style="{StaticResource Default}"/>
+                </Grid>
+                <Grid Grid.Row="15" >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="10*"/>
+                        <ColumnDefinition Width="1*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <Border Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2"
+Style="{StaticResource BorderParagraph}"/>
+                    <TextBlock Grid.Column="0" Grid.Row="0" Text="Региональные действия:"
+   Style="{StaticResource DefaultText}"/>
+                    <CheckBox x:Name="chkbRegEffects" Grid.Column="1" Grid.Row="0"  Content="Have?"
+  Style="{StaticResource Default}" Unchecked="chkbRegActions_Unchecked" Checked="chkbRegActions_Checked"/>
+                    <user:RichTextBoxClr x:Name="rtbRegEffects"
+             Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2"
+             Style="{StaticResource Default}"/>
+                </Grid>
+            </Grid>
+        </ScrollViewer>
+    </Grid>
+
+</Page>
