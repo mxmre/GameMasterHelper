@@ -36,7 +36,7 @@
             <Button x:Name="bnSave" Grid.Column="4" Content="E*" Click="bnSave_Click"/>
             <Button x:Name="bnOpenDefault" Grid.Column="5" Content="I" Click="bnOpenDefault_Click"/>
             <Button x:Name="bnOpenMerge" Grid.Column="6" Content="I*"/>
-            <TextBox x:Name="tbTestPrint" Grid.Column="2"/>
+            <ComboBox x:Name="cbSelectCreatureType" Grid.Column="2"/>
         </Grid>
         <ListView x:Name="CreaturesList" Grid.Column="0" Grid.Row="1" SelectionChanged="CreaturesList_SelectionChanged">
             <ListView.View>

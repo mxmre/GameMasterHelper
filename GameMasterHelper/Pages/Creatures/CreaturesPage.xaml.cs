@@ -94,6 +94,8 @@ namespace GameMasterHelper.Pages.Creatures
             CollectionOfCreatures = new ObservableCollection<ListItemCreature>();
             InitializeComponent();
             CreaturesList.ItemsSource = CollectionOfCreatures;
+            cbSelectCreatureType.ItemsSource = Enum.GetNames(typeof(DnDCreatureBuilder.DnDCreatureType)).ToList();
+            cbSelectCreatureType.SelectedIndex = 0;
             EditorTools.Content = null;
 
             //CreaturesList.Items.Add(new ListItemCreature());
@@ -119,7 +121,8 @@ namespace GameMasterHelper.Pages.Creatures
         }
         private void bnAddToList_Click(object sender, RoutedEventArgs e)
         {
-            RawAddToList(new DnDCreature());
+            RawAddToList(DnDCreatureBuilder.GetCreature(
+                (DnDCreatureBuilder.DnDCreatureType)cbSelectCreatureType.SelectedIndex));
         }
 
         private void bnDelFromList_Click(object sender, RoutedEventArgs e)

@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using System.Windows.Media.Imaging;
 
 namespace GameMasterHelper.Logic.DnD
 {
@@ -24,6 +27,12 @@ namespace GameMasterHelper.Logic.DnD
 
         public DnDCreature() : base()
         {
+            p_conditions = new Dictionary<DnDCreatureCondition, bool>();
+            int len = Enum.GetNames(typeof(DnDCreatureCondition)).Length;
+            for (int i = 0; i < len; ++i)
+            {
+                p_conditions.Add((DnDCreatureCondition)i, false);
+            }
             p_saveThrows = new Dictionary<DndCreatureAbility, ValueWithBonus<bool, int>>();
             for (int i = 0; i < 6; ++i) 
             {
@@ -84,8 +93,59 @@ namespace GameMasterHelper.Logic.DnD
             p_weaponsText           = "---";
             p_armorsText            = "---";
 
-            
+            p_image = null;
         }
+
+        [NonSerialized] private BitmapSource p_image;
+
+
+        [JsonIgnore]
+         public BitmapSource Image
+        {
+            
+            get 
+            {
+                return p_image; 
+            }
+            set { p_image = value; }
+        }
+
+        public byte[] ImagePixels
+        {
+            get 
+            {
+                byte[] bytes;
+                PngBitmapEncoder encoder = new PngBitmapEncoder();
+                using (MemoryStream stream = new MemoryStream())
+                {
+                    encoder.Frames.Add(BitmapFrame.Create(p_image));
+                    encoder.Save(stream);
+                    bytes = stream.ToArray();
+                    stream.Close();
+                }
+                return bytes;
+            }
+            set 
+            {
+                using (var memoryStream = new System.IO.MemoryStream(value))
+                {
+                    var image = new BitmapImage();
+                    image.BeginInit();
+                    image.CacheOption = BitmapCacheOption.OnLoad;
+                    image.StreamSource = memoryStream;
+                    image.EndInit();
+
+                    p_image = image;
+                }
+            }
+        }
+
+
+        public void LoadImage(Uri uri)
+        {
+            p_image = new BitmapImage(uri);
+        }
+
         public enum DnDCreatureSize
         {
             Tiny = 0,
@@ -95,6 +155,34 @@ namespace GameMasterHelper.Logic.DnD
             Huge,
             Gargantuan
         }
+
+        public enum DnDCreatureCondition
+        {
+            Blinded = 0,
+            Charmed,
+            Deafened,
+            Frightened,
+            Grappled,
+            Incapacitated,
+            Invisible,
+            Paralyzed,
+            Petrified,
+            Poisoned,
+            Prone,
+            Restrained,
+            Stunned,
+            Unconscious,
+            Exhaustion,
+        }
+
+        private Dictionary<DnDCreatureCondition, bool> p_conditions;
+
+        public Dictionary<DnDCreatureCondition, bool> Conditions
+        {
+            get { return p_conditions; }
+            set { p_conditions = value; }
+        }
+
 
         private DnDArmorType p_dndArmorType;
 
@@ -254,6 +342,19 @@ namespace GameMasterHelper.Logic.DnD
                     result.Add(item.Key);
             }
             return result;
+        }
+        public void SetConditionImmunity(DnDCreatureCondition condition, bool immunity) 
+        {
+            p_conditions[condition] = immunity;
+        }
+        public bool GetConditionImmunity(DnDCreatureCondition condition)
+        {
+            return p_conditions[condition];
+        }
+        public List<DnDCreatureCondition> GetConditionsList
+            (bool searchedValue = true)
+        {
+            return GetItemsFromDict(p_conditions, searchedValue);
         }
         public List<DnDDamageType> GetDmgTypeResistanceList
             (DnDCreatureResistance resistance)
@@ -751,7 +852,7 @@ namespace GameMasterHelper.Logic.DnD
     {
         public DnDCreatureMagicCaster() : base() 
         {
-
+            p_spellCastAbility = DndCreatureAbility.Intelligence;
         }
 
         private DndCreatureAbility p_spellCastAbility;
@@ -762,9 +863,30 @@ namespace GameMasterHelper.Logic.DnD
             set { p_spellCastAbility = value; }
         }
 
-        public uint SpellResistDC
+        public uint SpellDC
         {
             get { return 8u + this.ProficiencyBonus + (uint)this.GetAbilityModifierValue(this.SpellCastAbility); }
         }
     }
+
+    public abstract class DnDCreatureBuilder
+    {
+        public enum DnDCreatureType
+        {
+            Default =0,
+            MagicCaster,
+        }
+        public static DnDCreature GetCreature(DnDCreatureType creatureType)
+        {
+            switch (creatureType)
+            {
+                case DnDCreatureType.MagicCaster:
+                    return new DnDCreatureMagicCaster();
+                default:
+                    return new DnDCreature();
+            }
+
+        }
+    }
+
 }

@@ -1,9 +1,12 @@
 ﻿using GameMasterHelper.Logic.DnD;
 using GameMasterHelper.View.UserControls;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
@@ -25,6 +28,15 @@ namespace GameMasterHelper.Pages.Creatures
     {
         public void UpdatePage()
         {
+            gMagicCaster.Visibility = Visibility.Collapsed;
+            if (CreatureItem.Creature is DnDCreatureMagicCaster)
+            {
+                var caster = CreatureItem.Creature as DnDCreatureMagicCaster;
+                gMagicCaster.Visibility = Visibility.Visible;
+
+                cbMagicCasterAttr.SelectedIndex =(int)caster.SpellCastAbility;
+            }
+            
             tbpName.Text = CreatureItem.Creature.Name;
             rtbDescr.Text = CreatureItem.Creature.Description;
 
@@ -92,6 +104,7 @@ namespace GameMasterHelper.Pages.Creatures
             cbSaveThrowWis.SelectedIndex = CreatureItem.Creature.GetSaveThrowProf(DnDCreature.DndCreatureAbility.Wisdom) ? 1 : 0;
             cbSaveThrowCha.SelectedIndex = CreatureItem.Creature.GetSaveThrowProf(DnDCreature.DndCreatureAbility.Charisma) ? 1 : 0;
             UpdateSkillCB();
+            UpdateConditionImmunityCB();
             UpdateDMGResist();
             cbArmorType.SelectedIndex = (int)CreatureItem.Creature.EquipedArmorType;
             dctbArmorClass.Text = CreatureItem.Creature.ArmorValue.ToString();
@@ -102,6 +115,24 @@ namespace GameMasterHelper.Pages.Creatures
         {
             dctbArmorClass.CheckData();
             dctbDex.CheckData();
+
+            if (File.Exists(tbPathToImage.Text))
+            {
+                CreatureItem.Creature.LoadImage(new Uri(tbPathToImage.Text, UriKind.Absolute));
+                var trans = new ScaleTransform(
+                    300.0 / (double)CreatureItem.Creature.Image.PixelWidth,
+                    400.0 / (double)CreatureItem.Creature.Image.PixelHeight);
+                
+                var bmp = new TransformedBitmap(CreatureItem.Creature.Image, trans);
+                CreatureItem.Creature.Image = bmp;
+            }
+
+            if (CreatureItem.Creature is DnDCreatureMagicCaster)
+            {
+                var caster = CreatureItem.Creature as DnDCreatureMagicCaster;
+                caster.SpellCastAbility = 
+                    (DnDCreature.DndCreatureAbility)cbMagicCasterAttr.SelectedIndex;
+            }
 
             CreatureItem.Creature.ArmorsProf = tbpArmors.Text;
             CreatureItem.Creature.Languages= tbpLanguages.Text;
@@ -175,6 +206,7 @@ namespace GameMasterHelper.Pages.Creatures
             CreatureItem.Creature.SetSaveThrowProf(DnDCreature.DndCreatureAbility.Charisma,
                 cbSaveThrowCha.SelectedIndex == 1 ? true : false);
             UpdateCreatureSkills();
+            UpdateConditionImmunityCBToCreature();
             UpdateCreatureDMGResist();
             CreatureItem.Creature.EquipedArmorType = (DnDArmorType)cbArmorType.SelectedIndex;
             if (dctbArmorClass.Success)
@@ -194,6 +226,53 @@ namespace GameMasterHelper.Pages.Creatures
             if (dctb.Success)
                 CreatureItem.Creature.SetAbilityValue(ability,
                     uint.Parse(dctb.Text));
+        }
+        private void UpdateConditionImmunityCBToCreature()
+        {
+            int i = 0;
+            var condList = Enum.GetNames(typeof(DnDCreature.DnDCreatureCondition));
+            foreach (var child in ResistGrid.Children)
+            {
+
+                if (child is CheckBox)
+                {
+                    CreatureItem.Creature
+                        .SetConditionImmunity(
+                            (DnDCreature.DnDCreatureCondition)i,
+                            ((child as CheckBox).IsChecked) ?? false);
+                    ++i;
+                }
+            }
+        }
+        private void UpdateConditionImmunityCB()
+        {
+            int i = 0;
+            var condList = Enum.GetNames(typeof(DnDCreature.DnDCreatureCondition));
+            foreach (var child in ResistGrid.Children)
+            {
+
+                if (child is CheckBox)
+                {
+                    (child as CheckBox).IsChecked = CreatureItem.Creature
+                        .GetConditionImmunity((DnDCreature.DnDCreatureCondition)i);
+                    ++i;
+                }
+            }
+        }
+        private void InitConditionImmunityCB()
+        {
+            int i = 0;
+            var condList = Enum.GetNames(typeof(DnDCreature.DnDCreatureCondition));
+            foreach (var child in ResistGrid.Children)
+            {
+
+                if (child is CheckBox)
+                {
+                    var specChild = child as CheckBox;
+                    specChild.Content = condList[i];
+                    ++i;
+                }
+            }
         }
         private void InitDMGResistTB()
         {
@@ -300,7 +379,7 @@ namespace GameMasterHelper.Pages.Creatures
         private void InitSkillsCB()
         {
             var listSkillsProf = Enum.GetNames(typeof(DnDCreature.DndCreatureSkillProf)).ToList();
-            int i = 0;
+            
             cbStrSkill0.ItemsSource = listSkillsProf;
             cbDexSkill0.ItemsSource = listSkillsProf;
             cbDexSkill1.ItemsSource = listSkillsProf;
@@ -388,6 +467,9 @@ namespace GameMasterHelper.Pages.Creatures
             
             InitializeComponent();
             InitDMGResistCB();
+            tbPathToImage.IsEnabled = false;
+            cbMagicCasterAttr.ItemsSource = Enum.GetNames(typeof(DnDCreature.DndCreatureAbility))
+                .ToList();
             cbAligment.ItemsSource = Enum.GetNames(typeof(DnDCreature.DnDCreatureAlignment))
                 .ToList();
             cbSizes.ItemsSource = Enum.GetNames(typeof(DnDCreature.DnDCreatureSize))
@@ -405,6 +487,7 @@ namespace GameMasterHelper.Pages.Creatures
             InitSkillsTB();
             InitSkillsCB();
             InitDMGResistTB();
+            InitConditionImmunityCB();
             cbArmorType.ItemsSource = Enum.GetNames(typeof(DnDArmorType)).ToList();
 
             CreatureItem = pageView.CreatureItem;
@@ -566,6 +649,20 @@ namespace GameMasterHelper.Pages.Creatures
         private void chkbRegActions_Checked(object sender, RoutedEventArgs e)
         {
             rtbRegEffects.IsEnabled = true;
+        }
+
+        private void bnView_Click(object sender, RoutedEventArgs e)
+        {
+            var ofd = new OpenFileDialog();
+            string fileFromat = "Images(*.png;*.jpg;*.jpeg;*.bmp)|*.png;*.jpg;*.jpeg;*.bmp";
+
+            ofd.Filter = fileFromat;
+            ofd.Title = "Load";
+
+            if(ofd.ShowDialog() ?? false)
+            {
+                tbPathToImage.Text = ofd.FileName;
+            }
         }
     }
 }

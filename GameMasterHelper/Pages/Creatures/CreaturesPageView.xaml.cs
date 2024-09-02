@@ -79,16 +79,30 @@ namespace GameMasterHelper.Pages.Creatures
             }
             return sb.ToString();
         }
-        private string GetResistanceInfo(List<DnDDamageType> damageTypes,
+        private string GetListInfo<TList>(List<TList> someTypes,
             DnDCreature.DnDCreatureResistance targetDmgResistance)
         {
             StringBuilder sb = new StringBuilder();
-            foreach (var item in damageTypes)
+            foreach (var item in someTypes)
             {
                 sb.Append(string.Format("{0} {1}; ", targetDmgResistance.ToString(),
                     item.ToString()));
             }
             return sb.ToString();
+        }
+        private string GetConditionsInfo(List<DnDCreature.DnDCreatureCondition> conditionTypes)
+        {
+            StringBuilder sb = new StringBuilder();
+            foreach (var item in conditionTypes)
+            {
+                sb.Append(string.Format("{0}; ", item.ToString()));
+            }
+            return sb.ToString();
+        }
+        private string GetResistanceInfo(List<DnDDamageType> damageTypes,
+            DnDCreature.DnDCreatureResistance targetDmgResistance)
+        {
+            return GetListInfo(damageTypes, targetDmgResistance);
         }
         void UpdateSkills()
         {
@@ -135,6 +149,20 @@ namespace GameMasterHelper.Pages.Creatures
         }
         public void UpdatePage()
         {
+            
+            if(CreatureItem.Creature.Image != null)
+            {
+                imgCreature.Source = CreatureItem.Creature.Image;
+            }
+            spMagicCaster.Visibility = Visibility.Collapsed;
+            if(CreatureItem.Creature is DnDCreatureMagicCaster)
+            {
+                spMagicCaster.Visibility = Visibility.Visible;
+                tbMagicAttr.Text = (CreatureItem.Creature as DnDCreatureMagicCaster)
+                    .SpellCastAbility.ToString();
+                tbDCMagic.Text = (CreatureItem.Creature as DnDCreatureMagicCaster)
+                    .SpellDC.ToString();
+            }
             tbCreatureAligment.Text = p_creatureRef.Creature.CreatureAlignment.ToString();
             tbCreatureLevel.Text = string.Format("[{0}]", p_creatureRef.Creature.CreatureLevel);
             
@@ -184,6 +212,10 @@ namespace GameMasterHelper.Pages.Creatures
                     p_creatureRef.Creature.GetDmgTypeResistanceList(
                         DnDCreature.DnDCreatureResistance.Immunity),
                     DnDCreature.DnDCreatureResistance.Immunity))
+                .ToString();
+            tbCond.Text = new StringBuilder()
+                .Append(GetConditionsInfo(
+                    CreatureItem.Creature.GetConditionsList()))
                 .ToString();
             UpdateSkills();
             UpdateSaveThrows();
