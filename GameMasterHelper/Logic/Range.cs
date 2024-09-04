@@ -8,7 +8,7 @@ using System.Windows.Controls;
 namespace GameMasterHelper.Logic
 {
     [Serializable]
-    public class Range<T>
+    public class Range<T> : ICloneable
 		where T : IComparable<T>
     {
 		private void PropertyInitCheck()
@@ -17,6 +17,12 @@ namespace GameMasterHelper.Logic
 				throw new ArgumentException("min > max");
 				
 		}
+
+        public object Clone()
+        {
+            return new Range<T>(this.Minimum, this.Maximum);
+        }
+
         public Range() : this(default(T), default(T))
         {
         }
@@ -55,6 +61,10 @@ namespace GameMasterHelper.Logic
     public class Slider<T> : Range<T>
         where T : IComparable<T>
     {
+        public new object Clone()
+        {
+            return new Slider<T>(this.SliderValue, base.Clone() as Range<T>);
+        }
         private void SliderPropertyUpdate()
         {
             if (p_slider.CompareTo(Maximum) > 0)
@@ -64,6 +74,8 @@ namespace GameMasterHelper.Logic
         }
         public Slider() : this(default(T), default(T), default(T))
         { }
+        public Slider( T slider, Range<T> range) : this(range.Minimum, slider, range.Maximum)
+        {        }
         public Slider(T min, T slider, T max) : base(min, max)
         {
 			p_slider = slider;

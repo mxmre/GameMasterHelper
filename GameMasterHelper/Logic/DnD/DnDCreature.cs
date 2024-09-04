@@ -4,20 +4,27 @@ using System.Data;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
+using System.Xml.Serialization;
 
 namespace GameMasterHelper.Logic.DnD
 {
     [Serializable]
-    public class DnDCreature : BasicEntity
+    public class DnDCreature : BasicEntity, ICloneable
     {   
         private static ValueWithBonus<TValue, int> NewStat<TValue>(TValue abilityValue, int abilityBonus = 0)
         {
             return new ValueWithBonus<TValue, int>(abilityValue, abilityBonus);
         }
-
+        public new object Clone()
+        {
+            return JsonSerializer.Deserialize(
+                JsonSerializer.Serialize(this), typeof(DnDCreature))
+                as DnDCreature;
+        }
         public Dictionary<DndCreatureAbility, ValueWithBonus<bool, int>> SaveThrows 
         { get => p_saveThrows; set => p_saveThrows = value; }
         public Dictionary<DndCreatureSkill, ValueWithBonus<DndCreatureSkillProf, int>> Skills
@@ -27,6 +34,7 @@ namespace GameMasterHelper.Logic.DnD
 
         public DnDCreature() : base()
         {
+            p_ImageID = DefaultImageID;
             p_conditions = new Dictionary<DnDCreatureCondition, bool>();
             int len = Enum.GetNames(typeof(DnDCreatureCondition)).Length;
             for (int i = 0; i < len; ++i)
@@ -93,58 +101,77 @@ namespace GameMasterHelper.Logic.DnD
             p_weaponsText           = "---";
             p_armorsText            = "---";
 
-            p_image = null;
+            //p_image = null;
         }
-
-        [NonSerialized] private BitmapSource p_image;
-
-
-        [JsonIgnore]
-         public BitmapSource Image
+        public DnDCreature(BasicEntity entity) : this()
         {
-            
-            get 
-            {
-                return p_image; 
-            }
-            set { p_image = value; }
+            Name = entity.Name;
+            Description = entity.Description;
         }
 
-        public byte[] ImagePixels
+        //[NonSerialized] private BitmapSource p_image;
+
+
+        //[JsonIgnore]
+        //public BitmapSource Image
+        //{
+        //    get 
+        //    {
+        //        return p_image; 
+        //    }
+        //    set { p_image = value; }
+        //}
+
+        private ulong p_ImageID;
+
+        public ulong ImageID
         {
-            get 
-            {
-                byte[] bytes;
-                PngBitmapEncoder encoder = new PngBitmapEncoder();
-                using (MemoryStream stream = new MemoryStream())
-                {
-                    encoder.Frames.Add(BitmapFrame.Create(p_image));
-                    encoder.Save(stream);
-                    bytes = stream.ToArray();
-                    stream.Close();
-                }
-                return bytes;
-            }
-            set 
-            {
-                using (var memoryStream = new System.IO.MemoryStream(value))
-                {
-                    var image = new BitmapImage();
-                    image.BeginInit();
-                    image.CacheOption = BitmapCacheOption.OnLoad;
-                    image.StreamSource = memoryStream;
-                    image.EndInit();
-
-                    p_image = image;
-                }
-            }
+            get { return p_ImageID; }
+            set { p_ImageID = value; }
         }
 
+        public ulong DefaultImageID { get => 0; }
 
-        public void LoadImage(Uri uri)
-        {
-            p_image = new BitmapImage(uri);
-        }
+
+        //public byte[] ImagePixels
+        //{
+        //    get 
+        //    {
+        //        if (p_image == null)
+        //            return null;
+        //        byte[] bytes;
+        //        PngBitmapEncoder encoder = new PngBitmapEncoder();
+        //        using (MemoryStream stream = new MemoryStream())
+        //        {
+        //            encoder.Frames.Add(BitmapFrame.Create(p_image));
+        //            encoder.Save(stream);
+        //            bytes = stream.ToArray();
+        //            stream.Close();
+        //        }
+        //        return bytes;
+        //    }
+        //    set 
+        //    {
+        //        if(value != null)
+        //            using (var memoryStream = new System.IO.MemoryStream(value))
+        //            {
+        //                var image = new BitmapImage();
+        //                image.BeginInit();
+        //                image.CacheOption = BitmapCacheOption.OnLoad;
+        //                image.StreamSource = memoryStream;
+        //                image.EndInit();
+
+        //                p_image = image;
+        //            }
+        //        else { p_image = null; }
+        //    }
+        //}
+
+
+        //public void LoadImage(Uri uri)
+        //{
+        //    p_image = new BitmapImage(uri);
+        //}
 
         public enum DnDCreatureSize
         {

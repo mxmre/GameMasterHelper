@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace GameMasterHelper.Logic
 {
 	[Serializable]
-    public class BasicEntity
+    public class BasicEntity : ICloneable
     {
 		public BasicEntity()
 		{
@@ -15,7 +15,13 @@ namespace GameMasterHelper.Logic
 			Description = "null";
 		}
 
-		private string p_name;
+		public BasicEntity(string name, string description)
+        {
+            this.p_name = name;
+            this.p_description = description;
+        }
+
+        private string p_name;
 
 		public string Name
 		{
@@ -34,6 +40,12 @@ namespace GameMasterHelper.Logic
 		{
 			return p_name == "null";
 		}
-	}
+
+        public object Clone()
+        {
+            return new BasicEntity(this.Name.Clone() as string,
+				this.Description.Clone() as string);
+        }
+    }
 
 }

@@ -1,5 +1,6 @@
 ﻿using GameMasterHelper.Logic;
 using GameMasterHelper.Logic.DnD;
+using GameMasterHelper.Manage;
 using GameMasterHelper.View.UserControls;
 using System;
 using System.Collections.Generic;
@@ -150,9 +151,10 @@ namespace GameMasterHelper.Pages.Creatures
         public void UpdatePage()
         {
             
-            if(CreatureItem.Creature.Image != null)
+            if(CreatureItem.Creature.ImageID != CreatureItem.Creature.DefaultImageID)
             {
-                imgCreature.Source = CreatureItem.Creature.Image;
+                imgCreature.Source = Module.CreatureImagesCatalog.GetItem
+                    (CreatureItem.Creature.ImageID);
             }
             spMagicCaster.Visibility = Visibility.Collapsed;
             if(CreatureItem.Creature is DnDCreatureMagicCaster)

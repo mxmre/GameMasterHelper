@@ -117,7 +117,7 @@ namespace GameMasterHelper.Pages.Creatures
         private void RawAddToList(DnDCreature creature)
         {
             AddToList(creature);
-            ProgramDataBase.Creatures.Add(creature);
+            Module.Creatures.Add(creature);
         }
         private void bnAddToList_Click(object sender, RoutedEventArgs e)
         {
@@ -139,7 +139,7 @@ namespace GameMasterHelper.Pages.Creatures
         private void UpdateListView()
         {
             CollectionOfCreatures.Clear();
-            foreach (var item in ProgramDataBase.Creatures)
+            foreach (var item in Module.Creatures)
             {
                 AddToList(item);
             }
@@ -152,7 +152,7 @@ namespace GameMasterHelper.Pages.Creatures
                 return;
             }
             var listItem = (ListItemCreature)CreaturesList.SelectedItems[0];
-            ProgramDataBase.Creatures.Remove(listItem.Creature);
+            Module.Creatures.Remove(listItem.Creature);
             CollectionOfCreatures.Remove(listItem);
             RemoveAllSelectedItemsFromList();
         }
@@ -167,18 +167,35 @@ namespace GameMasterHelper.Pages.Creatures
 
         private void bnSave_Click(object sender, RoutedEventArgs e)
         {
-            ProgramDataBase.SaveCreaturesToFile(ProgramDataBase.Creatures);
+            //Module.SaveCreaturesToFile(Module.Creatures);
+            Module.SaveModule();
         }
 
         private void bnOpenDefault_Click(object sender, RoutedEventArgs e)
         {
-            List<DnDCreature> tmpList = new List<DnDCreature>();
-            if(ProgramDataBase.LoadCreaturesFromFile(out tmpList))
+            if(Module.LoadModule())
             {
-                ProgramDataBase.Creatures = tmpList;
                 UpdateListView();
             }
-            
+            //List<DnDCreature> tmpList = new List<DnDCreature>();
+            //if(Module.LoadCreaturesFromFile(out tmpList))
+            //{
+            //    Module.Creatures = tmpList;
+            //    UpdateListView();
+            //}
+
+        }
+
+        private void bnClone_Click(object sender, RoutedEventArgs e)
+        {
+            if (CreaturesList.SelectedItems.Count == 0 ||
+                MessageBox.Show(new StringBuilder().Append("Вы уверены, что хотите клонировать элемент ")
+                .Append((CreaturesList.SelectedItems[0] as ListItemCreature).Name)
+                .Append("?").ToString(),
+                "Копирование", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.No)
+                return;
+            RawAddToList((CreaturesList.SelectedItems[0] as ListItemCreature).Creature.Clone()
+                as DnDCreature);
         }
     }
 }

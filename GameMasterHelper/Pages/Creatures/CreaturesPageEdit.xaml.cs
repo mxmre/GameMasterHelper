@@ -1,4 +1,5 @@
 ﻿using GameMasterHelper.Logic.DnD;
+using GameMasterHelper.Manage;
 using GameMasterHelper.View.UserControls;
 using Microsoft.Win32;
 using System;
@@ -118,13 +119,15 @@ namespace GameMasterHelper.Pages.Creatures
 
             if (File.Exists(tbPathToImage.Text))
             {
-                CreatureItem.Creature.LoadImage(new Uri(tbPathToImage.Text, UriKind.Absolute));
+                BitmapSource source = Module.BitmapSourceFromUri(new Uri(tbPathToImage.Text, UriKind.Absolute));
+
                 var trans = new ScaleTransform(
-                    300.0 / (double)CreatureItem.Creature.Image.PixelWidth,
-                    400.0 / (double)CreatureItem.Creature.Image.PixelHeight);
+                    300.0 / (double)source.PixelWidth,
+                    400.0 / (double)source.PixelHeight);
                 
-                var bmp = new TransformedBitmap(CreatureItem.Creature.Image, trans);
-                CreatureItem.Creature.Image = bmp;
+                var bmp = new TransformedBitmap(source, trans);
+
+                CreatureItem.Creature.ImageID = Module.CreatureImagesCatalog.AddItem(bmp);
             }
 
             if (CreatureItem.Creature is DnDCreatureMagicCaster)

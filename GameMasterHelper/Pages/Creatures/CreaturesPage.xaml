@@ -22,6 +22,7 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="20"/>
                 <ColumnDefinition Width="20"/>
+                <ColumnDefinition Width="20"/>
                 <ColumnDefinition/>
                 <ColumnDefinition Width="20"/>
                 <ColumnDefinition Width="20"/>
@@ -32,11 +33,13 @@
     Click="bnAddToList_Click"/>
             <Button x:Name="bnDelFromList" Grid.Column="1" Content="-"
     Click="bnDelFromList_Click"/>
-            <Button x:Name="bnSaveDefault" Grid.Column="3" Content="E"/>
-            <Button x:Name="bnSave" Grid.Column="4" Content="E*" Click="bnSave_Click"/>
-            <Button x:Name="bnOpenDefault" Grid.Column="5" Content="I" Click="bnOpenDefault_Click"/>
-            <Button x:Name="bnOpenMerge" Grid.Column="6" Content="I*"/>
-            <ComboBox x:Name="cbSelectCreatureType" Grid.Column="2"/>
+            <Button x:Name="bnClone" Grid.Column="2" Content="C" Click="bnClone_Click"/>
+            <ComboBox x:Name="cbSelectCreatureType" Grid.Column="3"/>
+            <Button x:Name="bnSaveDefault" Grid.Column="4" Content="E"/>
+            <Button x:Name="bnSave" Grid.Column="5" Content="E*" Click="bnSave_Click"/>
+            <Button x:Name="bnOpenDefault" Grid.Column="6" Content="I" Click="bnOpenDefault_Click"/>
+            <Button x:Name="bnOpenMerge" Grid.Column="7" Content="I*"/>
+            
         </Grid>
         <ListView x:Name="CreaturesList" Grid.Column="0" Grid.Row="1" SelectionChanged="CreaturesList_SelectionChanged">
             <ListView.View>

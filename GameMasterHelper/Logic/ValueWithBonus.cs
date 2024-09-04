@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace GameMasterHelper.Logic
 {
     [Serializable]
-    public class ValueWithBonus<TValue, TBonus>
+    public class ValueWithBonus<TValue, TBonus> : ICloneable
     {
         public ValueWithBonus() :this(default(TValue), default(TBonus)) { }
 
@@ -32,5 +32,9 @@ namespace GameMasterHelper.Logic
 			set { p_bonus = value; }
 		}
 
-	}
+        public object Clone()
+        {
+            return new ValueWithBonus<TValue, TBonus>(Value, Bonus);
+        }
+    }
 }
