@@ -13,7 +13,8 @@ namespace GameMasterHelper.Logic
 		{
 			Name = "null";
 			Description = "null";
-		}
+
+        }
 
 		public BasicEntity(string name, string description)
         {
@@ -21,7 +22,8 @@ namespace GameMasterHelper.Logic
             this.p_description = description;
         }
 
-        private string p_name;
+
+		private string p_name;
 
 		public string Name
 		{

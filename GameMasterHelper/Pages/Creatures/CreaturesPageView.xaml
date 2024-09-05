@@ -193,27 +193,27 @@
                         <TextBlock Style="{StaticResource TitleTextSmall}" Text="Навыки"/>
                         <TextBlock x:Name="tbSkills" Style="{StaticResource InfoText}"/>
                     </StackPanel>
-                    <StackPanel Orientation="Horizontal" >
+                    <StackPanel x:Name="spDmg" Orientation="Horizontal" >
                         <TextBlock Style="{StaticResource TitleTextSmall}" Text="Урон"/>
                         <TextBlock Width="700"  x:Name="tbResist" Style="{StaticResource InfoText}"/>
                     </StackPanel>
-                    <StackPanel Orientation="Horizontal">
+                    <StackPanel x:Name="spCond" Orientation="Horizontal">
                         <TextBlock Style="{StaticResource TitleTextSmall}" Text="Иммунитет состояниям"/>
                         <TextBlock Width="700" x:Name="tbCond" Style="{StaticResource InfoText}"/>
                     </StackPanel>
-                    <StackPanel Orientation="Horizontal" >
+                    <StackPanel x:Name="spSenses" Orientation="Horizontal" >
                         <TextBlock Style="{StaticResource TitleTextSmall}" Text="Чувства"/>
                         <TextBlock x:Name="tbSenses" Style="{StaticResource InfoText}"/>
                     </StackPanel>
-                    <StackPanel Orientation="Horizontal" >
+                    <StackPanel x:Name="spLangs" Orientation="Horizontal" >
                         <TextBlock Style="{StaticResource TitleTextSmall}" Text="Языки"/>
                         <TextBlock x:Name="tbLangs" Style="{StaticResource InfoText}"/>
                     </StackPanel>
-                    <StackPanel Orientation="Horizontal" >
+                    <StackPanel x:Name="spArmors" Orientation="Horizontal" >
                         <TextBlock Style="{StaticResource TitleTextSmall}" Text="Владение броней"/>
                         <TextBlock x:Name="tbArmors" Style="{StaticResource InfoText}"/>
                     </StackPanel>
-                    <StackPanel Orientation="Horizontal" >
+                    <StackPanel x:Name="spWeapons" Orientation="Horizontal" >
                         <TextBlock Style="{StaticResource TitleTextSmall}" Text="Владение оружием"/>
                         <TextBlock x:Name="tbWeapons" Style="{StaticResource InfoText}"/>
                     </StackPanel>

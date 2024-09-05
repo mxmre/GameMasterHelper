@@ -191,16 +191,18 @@ namespace GameMasterHelper.Pages.Creatures
             UpdateAbility(aitbWis, DnDCreature.DndCreatureAbility.Wisdom);
             UpdateAbility(aitbCha, DnDCreature.DndCreatureAbility.Charisma);
 
-            
-            tbSkills.Text = new StringBuilder()
-                .Append(GetSkills(p_creatureRef.Creature.GetSkillsList
-                        (DnDCreature.DndCreatureSkillProf.Mastery)))
-                .Append(GetSkills(p_creatureRef.Creature.GetSkillsList
-                        (DnDCreature.DndCreatureSkillProf.Proficiency)))
-                .ToString();
-            tbSaveThrows.Text = new StringBuilder()
-                .Append(GetSaveThrows(p_creatureRef.Creature.GetSaveThrowsList()))
-                .ToString();
+
+            //tbSkills.Text = new StringBuilder()
+            //    .Append(GetSkills(p_creatureRef.Creature.GetSkillsList
+            //            (DnDCreature.DndCreatureSkillProf.Mastery)))
+            //    .Append(GetSkills(p_creatureRef.Creature.GetSkillsList
+            //            (DnDCreature.DndCreatureSkillProf.Proficiency)))
+            //    .ToString();
+            //tbSaveThrows.Text = new StringBuilder()
+            //    .Append(GetSaveThrows(p_creatureRef.Creature.GetSaveThrowsList()))
+            //    .ToString();
+            spDmg.Visibility = Visibility.Visible;
+            spCond.Visibility = Visibility.Visible;
             tbResist.Text = new StringBuilder()
                 .Append(GetResistanceInfo(
                     p_creatureRef.Creature.GetDmgTypeResistanceList(
@@ -219,14 +221,36 @@ namespace GameMasterHelper.Pages.Creatures
                 .Append(GetConditionsInfo(
                     CreatureItem.Creature.GetConditionsList()))
                 .ToString();
+
+            if(tbResist.Text == string.Empty)
+                spDmg.Visibility = Visibility.Collapsed;
+            if (tbCond.Text == string.Empty)
+                spCond.Visibility = Visibility.Collapsed;
+
             UpdateSkills();
             UpdateSaveThrows();
+
             tbExp.Text = p_creatureRef.Creature.Exp.ToString();
             tbWeightCarry.Text = p_creatureRef.Creature.WeightCarry.ToString();
+
+            spLangs.Visibility = Visibility.Visible;
+            spWeapons.Visibility = Visibility.Visible;
+            spSenses.Visibility = Visibility.Visible;
+            spArmors.Visibility = Visibility.Visible;
+
             tbLangs.Text = p_creatureRef.Creature.Languages;
             tbWeapons.Text = p_creatureRef.Creature.WeaponsProf;
             tbSenses.Text = p_creatureRef.Creature.Senses;
             tbArmors.Text = p_creatureRef.Creature.ArmorsProf;
+
+            if (p_creatureRef.Creature.Languages == string.Empty)
+                spLangs.Visibility = Visibility.Collapsed;
+            if (p_creatureRef.Creature.WeaponsProf == string.Empty)
+                spWeapons.Visibility = Visibility.Collapsed;
+            if (p_creatureRef.Creature.Senses == string.Empty)
+                spSenses.Visibility = Visibility.Collapsed;
+            if (p_creatureRef.Creature.ArmorsProf == string.Empty)
+                spArmors.Visibility = Visibility.Collapsed;
 
             UpdateEntities(bActions, p_creatureRef.Creature.Actions);
             tbActions.Text = p_creatureRef.Creature.Actions.Description;

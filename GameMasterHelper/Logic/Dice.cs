@@ -67,7 +67,7 @@ namespace GameMasterHelper.Logic
             int sum = 0;
             for (int i = 0; i < DiceCount; i++) { sum += (int)p_dice.Roll(); }
             sum += DiceMod;
-            return (sum < 0 ? 0u : (uint)sum);
+            return (sum <= 0 ? 1u : (uint)sum);
         }
 
         private Dice p_dice;
@@ -83,7 +83,13 @@ namespace GameMasterHelper.Logic
             get { return p_diceMod; }
             set { p_diceMod = value; }
         }
-        public uint DiceExprAverageResult { get { return (uint)(Math.Ceiling(p_dice.DiceAverageResult * DiceCount)+ DiceMod); } }
+        public uint DiceExprAverageResult 
+        { get 
+            {
+                var avg = (uint)(Math.Ceiling(p_dice.DiceAverageResult * DiceCount));
+                return (DiceMod < 0 && (uint)Math.Abs(DiceMod) == avg) ? 1 : (uint)((int)avg + DiceMod);
+            } 
+        }
 
         private uint p_diceCount;
 

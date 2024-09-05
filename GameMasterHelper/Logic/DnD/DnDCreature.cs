@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GameMasterHelper.Utils;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
@@ -21,9 +22,7 @@ namespace GameMasterHelper.Logic.DnD
         }
         public new object Clone()
         {
-            return JsonSerializer.Deserialize(
-                JsonSerializer.Serialize(this), typeof(DnDCreature))
-                as DnDCreature;
+            return MemoryObject<DnDCreature>.DeepClone(this);
         }
         public Dictionary<DndCreatureAbility, ValueWithBonus<bool, int>> SaveThrows 
         { get => p_saveThrows; set => p_saveThrows = value; }
@@ -95,11 +94,11 @@ namespace GameMasterHelper.Logic.DnD
             SetAverageHP();
             p_tempHp                = 0u;
 
-            p_senses                = "---";
-            p_languages             = "---";
-            p_conditionImmunity     = "---";
-            p_weaponsText           = "---";
-            p_armorsText            = "---";
+            p_senses                = string.Empty;
+            p_languages             = string.Empty;
+            p_conditionImmunity     = string.Empty;
+            p_weaponsText           = string.Empty;
+            p_armorsText            = string.Empty;
 
             //p_image = null;
         }
@@ -877,6 +876,10 @@ namespace GameMasterHelper.Logic.DnD
     [Serializable]
     public class DnDCreatureMagicCaster : DnDCreature
     {
+        public new object Clone()
+        {
+            return MemoryObject<DnDCreatureMagicCaster>.DeepClone(this);
+        }
         public DnDCreatureMagicCaster() : base() 
         {
             p_spellCastAbility = DndCreatureAbility.Intelligence;
@@ -895,12 +898,12 @@ namespace GameMasterHelper.Logic.DnD
             get { return 8u + this.ProficiencyBonus + (uint)this.GetAbilityModifierValue(this.SpellCastAbility); }
         }
     }
-
+    
     public abstract class DnDCreatureBuilder
     {
         public enum DnDCreatureType
         {
-            Default =0,
+            Default = 0,
             MagicCaster,
         }
         public static DnDCreature GetCreature(DnDCreatureType creatureType)

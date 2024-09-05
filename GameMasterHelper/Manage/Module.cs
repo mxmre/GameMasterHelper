@@ -14,10 +14,107 @@ using System.Windows.Markup;
 using System.Windows.Media.Imaging;
 using System.Xml.Serialization;
 using System.IO.Packaging;
+using System.Text.Json.Serialization;
 
 
 namespace GameMasterHelper.Manage
 {
+    public class JsonDnDCreatureConverter  : JsonConverter<DnDCreature>
+    {
+        public override bool CanConvert(Type type)
+        {
+            return typeof(DnDCreature).IsAssignableFrom(type);
+        }
+
+        public override DnDCreature Read(
+        ref Utf8JsonReader reader,
+        Type typeToConvert,
+        JsonSerializerOptions options)
+        {
+            if (reader.TokenType != JsonTokenType.StartObject)
+            {
+                throw new JsonException();
+            }
+
+            if (!reader.Read()
+                    || reader.TokenType != JsonTokenType.PropertyName
+                    || reader.GetString() != "DnDCreatureType")
+            {
+                throw new JsonException();
+            }
+
+            if (!reader.Read() || reader.TokenType != JsonTokenType.Number)
+            {
+                throw new JsonException();
+            }
+
+            DnDCreature baseClass;
+            DnDCreatureBuilder.DnDCreatureType typeDiscriminator = 
+                (DnDCreatureBuilder.DnDCreatureType)reader.GetInt32();
+            switch (typeDiscriminator)
+            {
+                case DnDCreatureBuilder.DnDCreatureType.Default:
+                    if (!reader.Read() || reader.GetString() != "TypeValue")
+                    {
+                        throw new JsonException();
+                    }
+                    if (!reader.Read() || reader.TokenType != JsonTokenType.StartObject)
+                    {
+                        throw new JsonException();
+                    }
+                    baseClass = (DnDCreature)JsonSerializer.Deserialize(ref reader, typeof(DnDCreature));
+                    break;
+                case DnDCreatureBuilder.DnDCreatureType.MagicCaster:
+                    if (!reader.Read() || reader.GetString() != "TypeValue")
+                    {
+                        throw new JsonException();
+                    }
+                    if (!reader.Read() || reader.TokenType != JsonTokenType.StartObject)
+                    {
+                        throw new JsonException();
+                    }
+                    baseClass = (DnDCreatureMagicCaster)JsonSerializer.Deserialize(ref reader, typeof(DnDCreatureMagicCaster));
+                    break;
+                default:
+                    throw new NotSupportedException();
+            }
+
+            if (!reader.Read() || reader.TokenType != JsonTokenType.EndObject)
+            {
+                throw new JsonException();
+            }
+
+            return baseClass;
+        }
+
+        public override void Write(
+            Utf8JsonWriter writer,
+            DnDCreature value,
+            JsonSerializerOptions options)
+        {
+            writer.WriteStartObject();
+
+            if (value is DnDCreatureMagicCaster caster)
+            {
+                writer.WriteNumber("DnDCreatureType", (int)DnDCreatureBuilder.DnDCreatureType.MagicCaster);
+                writer.WritePropertyName("TypeValue");
+                JsonSerializer.Serialize(writer, caster);
+            }
+            else if (value is DnDCreature creature)
+            {
+                writer.WriteNumber("DnDCreatureType", (int)DnDCreatureBuilder.DnDCreatureType.Default);
+                writer.WritePropertyName("TypeValue");
+                JsonSerializer.Serialize(writer, creature);
+            }
+            else
+            {
+                throw new NotSupportedException();
+            }
+
+            writer.WriteEndObject();
+        }
+    }
+
     public abstract class Module
     {
         static private OpenFileDialog p_ofd;
@@ -27,7 +124,7 @@ namespace GameMasterHelper.Manage
         {
             get
             {
-                return "~TEMP\\";
+                return Path.Combine(AppDataFolder, "~TEMP\\");
             }
         }
         static public string TempModuleFolder
@@ -37,12 +134,34 @@ namespace GameMasterHelper.Manage
                 return Path.Combine(TempFolder, "module\\");
             }
         }
+        static public string ImageFolder
+        {
+            get
+            {
+                return Path.Combine(TempModuleFolder, "images\\");
+            }
+        }
+        static public string CreatureImageFolder
+        {
+            get
+            {
+                return Path.Combine(ImageFolder, "creatures\\");
+            }
+        }
+        static public string CreatureSaveFile
+        {
+            get
+            {
+                return Path.Combine(TempModuleFolder, "creatures.json");
+            }
+        }
         static public string AppDataFolder
         {
             get
             {
+                string progName = "\\GameMasterHelper\\";
                 string path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-                return path == string.Empty ? "\\GameMasterHelper\\" : Path.Combine(path + "\\GameMasterHelper\\");
+                return path == string.Empty ? progName : Path.Combine(path + progName);
             }
         }
         static public void InitModule()
@@ -119,7 +238,12 @@ namespace GameMasterHelper.Manage
                 //xml.Serialize(file, data.ToArray());
                 ////var bf = new BinaryFormatter();
                 ////bf.Serialize(file, data);
-                var jsonStr = JsonSerializer.Serialize(objects, typeof(List<TValue>));
+                var options = new JsonSerializerOptions
+                {
+                    Converters = { new JsonDnDCreatureConverter() },
+                    WriteIndented = true,
+                };
+                var jsonStr = JsonSerializer.Serialize(objects, typeof(List<TValue>), options);
                 byte[] bytes = Encoding.UTF8.GetBytes(jsonStr);
                 file.Write(bytes, 0, bytes.Length);
             }
@@ -130,55 +254,59 @@ namespace GameMasterHelper.Manage
             using (var file = new FileStream(filePath, FileMode.Open,
                     FileAccess.Read))
             {
-                objects = JsonSerializer.Deserialize<List<TValue>>(file);
+                var options = new JsonSerializerOptions
+                {
+                    Converters = { new JsonDnDCreatureConverter() },
+                    WriteIndented = true,
+                };
+                objects = JsonSerializer.Deserialize<List<TValue>>(file, options);
             }
             
         }
+        static private void DeleteTempSaveDirectories()
+        {
+            if (Directory.Exists(TempFolder))
+                Directory.Delete(TempFolder, true);
+        }
+        static protected void CreateTempSaveDirectories()
+        {
+            DeleteTempSaveDirectories();
+            Directory.CreateDirectory(TempModuleFolder);
+
+            Directory.CreateDirectory(ImageFolder);
+            Directory.CreateDirectory(CreatureImageFolder);
+        }
         static public bool SaveModule()
         {
-            string tempDirectioryName = Path.Combine( AppDataFolder 
-                 + TempModuleFolder);
-            if (Directory.Exists(tempDirectioryName))
-                Directory.Delete(tempDirectioryName, true);
-            Directory.CreateDirectory(tempDirectioryName);
+            CreateTempSaveDirectories();
 
-            SaveObjectsToJson(P_CREATURES, tempDirectioryName + "creatures.json");
-
-
-            Directory.CreateDirectory(tempDirectioryName + "images\\");
-            Directory.CreateDirectory(tempDirectioryName + "images\\creatures\\");
-            SaveImages(P_CREATURE_IMAGES, tempDirectioryName + "images\\creatures\\");
+            SaveObjectsToJson(P_CREATURES, CreatureSaveFile);
+            SaveImages(P_CREATURE_IMAGES, CreatureImageFolder);
             bool success = false;
             if (success = p_sfd.ShowDialog() ?? false)
             {
                 if (File.Exists(p_sfd.FileName))
                     File.Delete(p_sfd.FileName);
-                ZipFile.CreateFromDirectory(tempDirectioryName, p_sfd.FileName);
-                
+                ZipFile.CreateFromDirectory(TempModuleFolder, p_sfd.FileName);
             }
-            if (Directory.Exists(tempDirectioryName))
-                Directory.Delete(tempDirectioryName, true);
+            DeleteTempSaveDirectories();
             return success;
         }
 
         
         static public bool LoadModule()
         {
-
-            string tempDirectioryName = AppDataFolder
-                 + TempModuleFolder;
-            if (Directory.Exists(tempDirectioryName))
-                Directory.Delete(tempDirectioryName, true);
+            DeleteTempSaveDirectories();
+            Directory.CreateDirectory(TempModuleFolder);
             bool success = false;
             if (success = p_ofd.ShowDialog() ?? false)
             {
-                ZipFile.ExtractToDirectory(p_ofd.FileName, tempDirectioryName);
+                ZipFile.ExtractToDirectory(p_ofd.FileName, TempModuleFolder);
 
-                LoadObjectsFromJson(out P_CREATURES, tempDirectioryName + "creatures.json");
-                LoadImages(out P_CREATURE_IMAGES, tempDirectioryName + "images\\creatures\\");
+                LoadObjectsFromJson(out P_CREATURES, CreatureSaveFile);
+                LoadImages(out P_CREATURE_IMAGES, CreatureImageFolder);
             }
-            if (Directory.Exists(tempDirectioryName))
-                Directory.Delete(tempDirectioryName, true);
+            DeleteTempSaveDirectories();
             return success;
         }
 
