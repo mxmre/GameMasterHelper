@@ -273,12 +273,19 @@ namespace GameMasterHelper.Manage
             Directory.CreateDirectory(Paths.ImageFolder);
             Directory.CreateDirectory(Paths.CreatureImageFolder);
         }
+        static private void SaveCreatures()
+        {
+            if(!(P_CREATURES.Count == 0 || P_CREATURES == null))
+            {
+                SaveObjectsToJson(P_CREATURES, Paths.CreatureSaveFile);
+                SaveImages(P_CREATURE_IMAGES, Paths.CreatureImageFolder);
+            }
+        }
         static public bool SaveModule()
         {
             CreateTempSaveDirectories();
 
-            SaveObjectsToJson(P_CREATURES, Paths.CreatureSaveFile);
-            SaveImages(P_CREATURE_IMAGES, Paths.CreatureImageFolder);
+            SaveCreatures();
             bool success = false;
             if (success = p_sfd.ShowDialog() ?? false)
             {
@@ -290,7 +297,11 @@ namespace GameMasterHelper.Manage
             return success;
         }
 
-        
+        static private void LoadCreatures()
+        {
+            LoadObjectsFromJson(out P_CREATURES, Paths.CreatureSaveFile);
+            LoadImages(out P_CREATURE_IMAGES, Paths.CreatureImageFolder);
+        }
         static public bool LoadModule()
         {
             DeleteTempSaveDirectories();
@@ -299,9 +310,7 @@ namespace GameMasterHelper.Manage
             if (success = p_ofd.ShowDialog() ?? false)
             {
                 ZipFile.ExtractToDirectory(p_ofd.FileName, Paths.TempModuleFolder);
-
-                LoadObjectsFromJson(out P_CREATURES, Paths.CreatureSaveFile);
-                LoadImages(out P_CREATURE_IMAGES, Paths.CreatureImageFolder);
+                LoadCreatures();
             }
             DeleteTempSaveDirectories();
             return success;
