@@ -93,6 +93,8 @@
     <Compile Include="Logic\BasicEntity.cs" />
     <Compile Include="Logic\Dice.cs" />
     <Compile Include="Logic\DnD\DnDCreature.cs" />
+    <Compile Include="Logic\DnD\DnDCreatureBuilder.cs" />
+    <Compile Include="Logic\DnD\DnDCreatureMagicCaster.cs" />
     <Compile Include="Logic\DnD\DnDUtils.cs" />
     <Compile Include="Logic\Range.cs" />
     <Compile Include="Logic\ValueWithBonus.cs" />

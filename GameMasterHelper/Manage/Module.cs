@@ -120,50 +120,54 @@ namespace GameMasterHelper.Manage
         static private OpenFileDialog p_ofd;
         static private SaveFileDialog p_sfd;
         static private string p_ModuleFilesFormat = "Module(*.gmhmod)|*.gmhmod";
-        static public string TempFolder
+        public abstract class Paths
         {
-            get
+            static public string TempFolder
             {
-                return Path.Combine(AppDataFolder, "~TEMP\\");
+                get
+                {
+                    return Path.Combine(AppDataFolder, "~TEMP\\");
+                }
+            }
+            static public string TempModuleFolder
+            {
+                get
+                {
+                    return Path.Combine(TempFolder, "module\\");
+                }
+            }
+            static public string ImageFolder
+            {
+                get
+                {
+                    return Path.Combine(TempModuleFolder, "images\\");
+                }
+            }
+            static public string CreatureImageFolder
+            {
+                get
+                {
+                    return Path.Combine(ImageFolder, "creatures\\");
+                }
+            }
+            static public string CreatureSaveFile
+            {
+                get
+                {
+                    return Path.Combine(TempModuleFolder, "creatures.json");
+                }
+            }
+            static public string AppDataFolder
+            {
+                get
+                {
+                    string progName = "\\GameMasterHelper\\";
+                    string path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+                    return path == string.Empty ? progName : Path.Combine(path + progName);
+                }
             }
         }
-        static public string TempModuleFolder
-        {
-            get
-            {
-                return Path.Combine(TempFolder, "module\\");
-            }
-        }
-        static public string ImageFolder
-        {
-            get
-            {
-                return Path.Combine(TempModuleFolder, "images\\");
-            }
-        }
-        static public string CreatureImageFolder
-        {
-            get
-            {
-                return Path.Combine(ImageFolder, "creatures\\");
-            }
-        }
-        static public string CreatureSaveFile
-        {
-            get
-            {
-                return Path.Combine(TempModuleFolder, "creatures.json");
-            }
-        }
-        static public string AppDataFolder
-        {
-            get
-            {
-                string progName = "\\GameMasterHelper\\";
-                string path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-                return path == string.Empty ? progName : Path.Combine(path + progName);
-            }
-        }
+        
         static public void InitModule()
         {
             p_ofd = new OpenFileDialog();
@@ -210,34 +214,27 @@ namespace GameMasterHelper.Manage
                 return;
             }
             images = new Catalog<BitmapSource>(1);
+            images.BeginInsertInit();
             var imagesPaths = Directory.GetFiles(directoryPath);
 
             foreach (var path in imagesPaths)
             {
                 ulong realImageKey = 0;
-                bool isCorrectImageKey = ulong.TryParse(Path.GetFileNameWithoutExtension(Path.GetFileName(path)), out realImageKey);
+                bool isCorrectImageKey = ulong.TryParse(
+                    Path.GetFileNameWithoutExtension(Path.GetFileName(path)), out realImageKey);
                 if (!isCorrectImageKey)
                 {
                     throw new Exception("Wrong Image Name!");
-
                 }
-
-                if (images.AddItem(BitmapSourceFromUri(new Uri(path, UriKind.Absolute))) != realImageKey)
-                {
-                    throw new Exception("Real image key and addable image key is not equal!");
-                }
+                images.Insert(realImageKey, BitmapSourceFromUri(new Uri(path, UriKind.Absolute)));
             }
+            images.EndInsertInit();
         }
         static public void SaveObjectsToJson<TValue>(List<TValue> objects, string directoryPath)
         {
             using (var file = new FileStream(directoryPath, FileMode.Create,
                     FileAccess.Write))
             {
-                //var xml = new XmlSerializer(typeof(TValue[]));
-                ////loadedData = (TValue)bf.Deserialize(file);
-                //xml.Serialize(file, data.ToArray());
-                ////var bf = new BinaryFormatter();
-                ////bf.Serialize(file, data);
                 var options = new JsonSerializerOptions
                 {
                     Converters = { new JsonDnDCreatureConverter() },
@@ -265,29 +262,29 @@ namespace GameMasterHelper.Manage
         }
         static private void DeleteTempSaveDirectories()
         {
-            if (Directory.Exists(TempFolder))
-                Directory.Delete(TempFolder, true);
+            if (Directory.Exists(Paths.TempFolder))
+                Directory.Delete(Paths.TempFolder, true);
         }
         static protected void CreateTempSaveDirectories()
         {
             DeleteTempSaveDirectories();
-            Directory.CreateDirectory(TempModuleFolder);
+            Directory.CreateDirectory(Paths.TempModuleFolder);
 
-            Directory.CreateDirectory(ImageFolder);
-            Directory.CreateDirectory(CreatureImageFolder);
+            Directory.CreateDirectory(Paths.ImageFolder);
+            Directory.CreateDirectory(Paths.CreatureImageFolder);
         }
         static public bool SaveModule()
         {
             CreateTempSaveDirectories();
 
-            SaveObjectsToJson(P_CREATURES, CreatureSaveFile);
-            SaveImages(P_CREATURE_IMAGES, CreatureImageFolder);
+            SaveObjectsToJson(P_CREATURES, Paths.CreatureSaveFile);
+            SaveImages(P_CREATURE_IMAGES, Paths.CreatureImageFolder);
             bool success = false;
             if (success = p_sfd.ShowDialog() ?? false)
             {
                 if (File.Exists(p_sfd.FileName))
                     File.Delete(p_sfd.FileName);
-                ZipFile.CreateFromDirectory(TempModuleFolder, p_sfd.FileName);
+                ZipFile.CreateFromDirectory(Paths.TempModuleFolder, p_sfd.FileName);
             }
             DeleteTempSaveDirectories();
             return success;
@@ -297,14 +294,14 @@ namespace GameMasterHelper.Manage
         static public bool LoadModule()
         {
             DeleteTempSaveDirectories();
-            Directory.CreateDirectory(TempModuleFolder);
+            Directory.CreateDirectory(Paths.TempModuleFolder);
             bool success = false;
             if (success = p_ofd.ShowDialog() ?? false)
             {
-                ZipFile.ExtractToDirectory(p_ofd.FileName, TempModuleFolder);
+                ZipFile.ExtractToDirectory(p_ofd.FileName, Paths.TempModuleFolder);
 
-                LoadObjectsFromJson(out P_CREATURES, CreatureSaveFile);
-                LoadImages(out P_CREATURE_IMAGES, CreatureImageFolder);
+                LoadObjectsFromJson(out P_CREATURES, Paths.CreatureSaveFile);
+                LoadImages(out P_CREATURE_IMAGES, Paths.CreatureImageFolder);
             }
             DeleteTempSaveDirectories();
             return success;

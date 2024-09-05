@@ -13,15 +13,29 @@ namespace GameMasterHelper.Manage.Collections
 
 		public ulong StartID
 		{
-			get { return p_idStart; }
-			private set { p_idStart = value; }
+			get 
+			{
+                _IfInsertInitBeginCheck();
+                return p_idStart;
+			}
+			private set 
+			{
+				_IfInsertInitBeginCheck();
+                p_idStart = value; 
+			}
 		}
+		private void _IfInsertInitBeginCheck()
+		{
+            if (p_insertInitBegin)
+                throw new Exception("End insert init!");
+        }
 
 		public Catalog(ulong idStart = 0ul) 
 		{
             p_catalog = new SortedDictionary<ulong, TValue> ();
             StartID = idStart;
             p_id = StartID;
+			p_insertInitBegin = false;
         }
 
 		//string[] GetItemsNames()
@@ -53,16 +67,13 @@ namespace GameMasterHelper.Manage.Collections
 
         public void ClearItems()
 		{
-			p_id = StartID;
+            _IfInsertInitBeginCheck();
+            p_id = StartID;
             p_catalog.Clear ();
         }
 		private void UpdateID()
 		{
-			ulong newId = StartID;
-			for(int i = 0; i < p_catalog.Count; i++)
-			{
-
-			}
+			ulong newId = p_idStart;
             foreach (var item in p_catalog)
             {
                 if(item.Key != newId)
@@ -73,10 +84,35 @@ namespace GameMasterHelper.Manage.Collections
             }
             p_id = newId;
         }
-
-		public ulong AddItem(TValue item)
+		private bool p_insertInitBegin;
+		public void BeginInsertInit()
 		{
-			if (p_catalog.ContainsKey(p_id))
+			if (p_insertInitBegin)
+				throw new Exception("End previous insert init!");
+			ClearItems();
+			p_insertInitBegin = true;
+
+        }
+		public void Insert(ulong id, TValue value)
+		{
+            if (!p_insertInitBegin)
+                throw new Exception("Begin insert init!");
+			if(p_catalog.ContainsKey(id))
+                throw new Exception("Value with this id already exist!");
+			p_catalog.Add(id, value );
+        }
+        public void EndInsertInit()
+        {
+            if (!p_insertInitBegin)
+                throw new Exception("Begin insert init!");
+            UpdateID();
+            p_insertInitBegin = false;
+        }
+
+        public ulong AddItem(TValue item)
+		{
+            _IfInsertInitBeginCheck();
+            if (p_catalog.ContainsKey(p_id))
 				throw new ArgumentException(item.GetType().Name + " item");
 			p_catalog.Add(p_id, item);
 			ulong id = p_id;
@@ -86,13 +122,15 @@ namespace GameMasterHelper.Manage.Collections
 
 		public void RemoveItem(ulong key)
 		{
+            _IfInsertInitBeginCheck();
             p_catalog.Remove(key);
             UpdateID();
         }
 
 		public TValue GetItem(ulong key)
 		{
-			return p_catalog[key];
+            _IfInsertInitBeginCheck();
+            return p_catalog[key];
 
         }
 
@@ -102,8 +140,16 @@ namespace GameMasterHelper.Manage.Collections
 
 		public ulong NextID
 		{
-			get { return p_id; }
-			private set { p_id = value; }
+			get 
+			{
+                _IfInsertInitBeginCheck();
+                return p_id; 
+			}
+			private set 
+			{
+                _IfInsertInitBeginCheck();
+                p_id = value;
+			}
 		}
 
 		private SortedDictionary<ulong, TValue> p_catalog;
@@ -112,13 +158,18 @@ namespace GameMasterHelper.Manage.Collections
 		{
 			get 
 			{
-				var catalog_copy = p_catalog.Select(item =>
+                _IfInsertInitBeginCheck();
+                var catalog_copy = p_catalog.Select(item =>
 				new KeyValuePair<ulong, TValue>(item.Key, item.Value));
 
 				return new SortedDictionary<ulong, TValue>( catalog_copy.ToDictionary(item => item.Key, item => item.Value));
 
             }
-			private set { p_catalog = value; }
+			private set 
+			{
+                _IfInsertInitBeginCheck();
+                p_catalog = value;
+			}
 		}
 
 	}

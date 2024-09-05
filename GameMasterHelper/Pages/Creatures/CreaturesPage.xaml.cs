@@ -152,6 +152,7 @@ namespace GameMasterHelper.Pages.Creatures
                 return;
             }
             var listItem = (ListItemCreature)CreaturesList.SelectedItems[0];
+            Module.CreatureImagesCatalog.RemoveItem(listItem.Creature.ImageID);
             Module.Creatures.Remove(listItem.Creature);
             CollectionOfCreatures.Remove(listItem);
             RemoveAllSelectedItemsFromList();
