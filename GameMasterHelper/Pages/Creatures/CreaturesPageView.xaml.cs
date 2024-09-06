@@ -153,7 +153,7 @@ namespace GameMasterHelper.Pages.Creatures
             
             if(CreatureItem.Creature.ImageID != CreatureItem.Creature.DefaultImageID)
             {
-                imgCreature.Source = Module.CreatureImagesCatalog.GetItem
+                imgCreature.Source = DataManager.CurrentModule.CreatureImages.GetItem
                     (CreatureItem.Creature.ImageID);
             }
             spMagicCaster.Visibility = Visibility.Collapsed;

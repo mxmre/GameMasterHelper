@@ -30,7 +30,7 @@ namespace GameMasterHelper
         public int xAmples = 1;
         public MainWindow()
         {
-            Module.InitModule();
+            DataManager.Init();
             InitializeComponent();
             AppDomain currentDomain = AppDomain.CurrentDomain;
             currentDomain.UnhandledException += new UnhandledExceptionEventHandler(MyHandler);

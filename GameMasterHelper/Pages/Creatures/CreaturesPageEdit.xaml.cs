@@ -119,7 +119,7 @@ namespace GameMasterHelper.Pages.Creatures
 
             if (File.Exists(tbPathToImage.Text))
             {
-                BitmapSource source = Module.BitmapSourceFromUri(new Uri(tbPathToImage.Text, UriKind.Absolute));
+                BitmapSource source = DataManager.BitmapSourceFromUri(new Uri(tbPathToImage.Text, UriKind.Absolute));
 
                 var trans = new ScaleTransform(
                     300.0 / (double)source.PixelWidth,
@@ -127,7 +127,7 @@ namespace GameMasterHelper.Pages.Creatures
                 
                 var bmp = new TransformedBitmap(source, trans);
 
-                CreatureItem.Creature.ImageID = Module.CreatureImagesCatalog.AddItem(bmp);
+                CreatureItem.Creature.ImageID = DataManager.CurrentModule.CreatureImages.AddItem(bmp);
             }
 
             if (CreatureItem.Creature is DnDCreatureMagicCaster)

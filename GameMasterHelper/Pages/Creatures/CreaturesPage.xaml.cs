@@ -117,7 +117,7 @@ namespace GameMasterHelper.Pages.Creatures
         private void RawAddToList(DnDCreature creature)
         {
             AddToList(creature);
-            Module.Creatures.Add(creature);
+            DataManager.CurrentModule.Creatures.Add(creature);
         }
         private void bnAddToList_Click(object sender, RoutedEventArgs e)
         {
@@ -139,7 +139,7 @@ namespace GameMasterHelper.Pages.Creatures
         private void UpdateListView()
         {
             CollectionOfCreatures.Clear();
-            foreach (var item in Module.Creatures)
+            foreach (var item in DataManager.CurrentModule.Creatures)
             {
                 AddToList(item);
             }
@@ -152,8 +152,8 @@ namespace GameMasterHelper.Pages.Creatures
                 return;
             }
             var listItem = (ListItemCreature)CreaturesList.SelectedItems[0];
-            Module.CreatureImagesCatalog.RemoveItem(listItem.Creature.ImageID);
-            Module.Creatures.Remove(listItem.Creature);
+            DataManager.CurrentModule.CreatureImages.RemoveItem(listItem.Creature.ImageID);
+            DataManager.CurrentModule.Creatures.Remove(listItem.Creature);
             CollectionOfCreatures.Remove(listItem);
             RemoveAllSelectedItemsFromList();
         }
@@ -168,20 +168,20 @@ namespace GameMasterHelper.Pages.Creatures
 
         private void bnSave_Click(object sender, RoutedEventArgs e)
         {
-            //Module.SaveCreaturesToFile(Module.Creatures);
-            Module.SaveModule();
+            //DataManager.SaveCreaturesToFile(DataManager.Creatures);
+            DataManager.SaveModuleData();
         }
 
         private void bnOpenDefault_Click(object sender, RoutedEventArgs e)
         {
-            if(Module.LoadModule())
+            if(DataManager.LoadModuleData())
             {
                 UpdateListView();
             }
             //List<DnDCreature> tmpList = new List<DnDCreature>();
-            //if(Module.LoadCreaturesFromFile(out tmpList))
+            //if(DataManager.LoadCreaturesFromFile(out tmpList))
             //{
-            //    Module.Creatures = tmpList;
+            //    DataManager.Creatures = tmpList;
             //    UpdateListView();
             //}
 

@@ -99,6 +99,7 @@
     <Compile Include="Logic\Range.cs" />
     <Compile Include="Logic\ValueWithBonus.cs" />
     <Compile Include="Manage\Collections\Catalog.cs" />
+    <Compile Include="Manage\DataManager.cs" />
     <Compile Include="Manage\Module.cs" />
     <Compile Include="Pages\Creatures\CreaturesPage.xaml.cs">
       <DependentUpon>CreaturesPage.xaml</DependentUpon>
